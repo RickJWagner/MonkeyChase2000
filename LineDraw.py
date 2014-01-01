@@ -7,6 +7,17 @@ line_bends = 1
 
 import random
 
+
+
+class MyMonkeyClass(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(image_file)
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
+
+
+
 class Course_charter:
      
     def __init__(self, height, width, lane_width, x_adjust, y_jump):
@@ -36,13 +47,20 @@ screen = pygame.display.set_mode([SCREEN_WIDTH,SCREEN_DEPTH])
 screen.fill([255, 255, 255])
 charter = Course_charter (SCREEN_DEPTH, SCREEN_WIDTH, lane_width, 350, 300)
 pts = charter.make_line()
-pygame.draw.lines(screen, [255,0,0],False, pts, lane_width)
-#pygame.draw.lines(screen, [0,0,0],False, parallel_pts, 1)
+monkey = MyMonkeyClass("monkey1.jpeg", pts[0])
 
 
 
-pygame.display.flip()
+
+
+
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+
+    pygame.time.delay(200)
+    pygame.draw.lines(screen, [255,0,0],False, pts, lane_width)
+    screen.blit(monkey.image, monkey.rect)  # 25 is about half of monkey
+    pygame.display.flip()
