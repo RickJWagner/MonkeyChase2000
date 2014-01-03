@@ -56,7 +56,20 @@ class Course_charter:
             plotpoints.append([x, y])
         return plotpoints
     
+def animate(group):
     
+    for antagonist in group:
+        group.remove(antagonist)
+        if pygame.sprite.spritecollide(antagonist, group, False):
+            antagonist.speed[0] = -antagonist.speed[0]
+            antagonist.speed[1] = -antagonist.speed[1]
+    
+        group.add(antagonist)
+        antagonist.move()
+        screen.blit(antagonist.image, antagonist.rect)
+ 
+
+
 
 pygame.init()
 screen = pygame.display.set_mode([SCREEN_WIDTH,SCREEN_DEPTH])
@@ -64,15 +77,18 @@ screen.fill([255, 255, 255])
 charter = Course_charter (SCREEN_DEPTH, SCREEN_WIDTH, lane_width, 350, 300)
 pts = charter.make_line()
 monkey = MyMonkeyClass("monkey1.jpeg", pts[0])
-antagonists = []
-antagonist = Antagonist("JonahsHead.png",[10,100], [20,20])
+#antagonists = []
+antagonists = pygame.sprite.Group()
+antagonist1 = Antagonist("JonahsHead.png",[10,100], [20,20])
 antagonist2 = Antagonist("LukesHead.png",[50,200], [50,40])
 antagonist3 = Antagonist("SarahsHead.png",[300,300], [-10,20])
+monkeyspeed = 20
 
 
-antagonists.append(antagonist)
-antagonists.append(antagonist2)
-antagonists.append(antagonist3)
+#antagonists.append(antagonist)
+antagonists.add(antagonist1)
+antagonists.add(antagonist2)
+antagonists.add(antagonist3)
 
 
 
@@ -85,13 +101,32 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-
-    pygame.time.delay(200)
+            
+    pressedkeys = pygame.key.get_pressed()
+    if pressedkeys[pygame.K_LEFT]:
+        monkey.rect[0] -= monkeyspeed
+    if pressedkeys[pygame.K_RIGHT]:
+        monkey.rect[0] += monkeyspeed
+    if pressedkeys[pygame.K_UP]:
+        monkey.rect[1] -= monkeyspeed
+    if pressedkeys[pygame.K_DOWN]:
+        monkey.rect[1] += monkeyspeed
+    
+    
+    pygame.time.delay(100)
     screen.fill([255, 255, 255])
+    animate(antagonists)    
     pygame.draw.lines(screen, [255,0,0],False, pts, lane_width)
+    
+    if pygame.sprite.spritecollide(monkey, antagonists, False):
+        print "BAM!"
+
+    
+    
     screen.blit(monkey.image, monkey.rect)  # 25 is about half of monkey
-    for antagonist in antagonists:
-        antagonist.move()
-        screen.blit(antagonist.image, antagonist.rect)
+        
+    #for antagonist in antagonists:
+    #    antagonist.move()
+    #    screen.blit(antagonist.image, antagonist.rect)
 
     pygame.display.flip()
