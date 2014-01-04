@@ -31,8 +31,7 @@ class MyMonkeyClass(pygame.sprite.Sprite):
         self.image = pygame.image.load(image_file)
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = location
-
-
+        
 
 class Course_charter:
      
@@ -72,30 +71,28 @@ def animate(group):
 
 
 pygame.init()
+Clock = pygame.time.Clock()
 screen = pygame.display.set_mode([SCREEN_WIDTH,SCREEN_DEPTH])
 screen.fill([255, 255, 255])
 charter = Course_charter (SCREEN_DEPTH, SCREEN_WIDTH, lane_width, 350, 300)
 pts = charter.make_line()
-monkey = MyMonkeyClass("monkey1.jpeg", pts[0])
-#antagonists = []
+monkey = MyMonkeyClass("WMonkeyR_1.png", pts[0])
+monkeys = []
+monkeys.append(pygame.image.load("WMonkeyR_1.png"))
+monkeys.append(pygame.image.load("WMonkeyR_2.png"))
+monkeys.append(pygame.image.load("WMonkeyR_3.png"))
+
+    
 antagonists = pygame.sprite.Group()
 antagonist1 = Antagonist("JonahsHead.png",[10,100], [20,20])
 antagonist2 = Antagonist("LukesHead.png",[50,200], [50,40])
 antagonist3 = Antagonist("SarahsHead.png",[300,300], [-10,20])
 monkeyspeed = 20
-
-
-#antagonists.append(antagonist)
 antagonists.add(antagonist1)
 antagonists.add(antagonist2)
 antagonists.add(antagonist3)
 
-
-
-
-
-
-
+imageCount = 0
 
 while True:
     for event in pygame.event.get():
@@ -106,27 +103,24 @@ while True:
     if pressedkeys[pygame.K_LEFT]:
         monkey.rect[0] -= monkeyspeed
     if pressedkeys[pygame.K_RIGHT]:
+        imageCount += 1
         monkey.rect[0] += monkeyspeed
     if pressedkeys[pygame.K_UP]:
         monkey.rect[1] -= monkeyspeed
     if pressedkeys[pygame.K_DOWN]:
         monkey.rect[1] += monkeyspeed
     
-    
-    pygame.time.delay(100)
+    print monkey.rect[0], monkey.rect[1]
+    Clock.tick(10)
     screen.fill([255, 255, 255])
     animate(antagonists)    
     pygame.draw.lines(screen, [255,0,0],False, pts, lane_width)
     
     if pygame.sprite.spritecollide(monkey, antagonists, False):
         print "BAM!"
-
-    
-    
-    screen.blit(monkey.image, monkey.rect)  # 25 is about half of monkey
         
-    #for antagonist in antagonists:
-    #    antagonist.move()
-    #    screen.blit(antagonist.image, antagonist.rect)
+        
+    screen.blit(monkeys[(imageCount % 3)], monkey.rect)  # 25 is about half of monkey
+  
 
     pygame.display.flip()
